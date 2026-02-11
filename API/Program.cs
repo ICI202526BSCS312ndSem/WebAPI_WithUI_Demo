@@ -1,6 +1,4 @@
 
-using API.DAL;
-using API.Services;
 using System.Text.Json;
 
 namespace API
@@ -33,9 +31,6 @@ namespace API
                           .AllowAnyMethod();
                 });
             });
-
-            builder.Services.AddSingleton<ProductRepository>();
-            builder.Services.AddScoped<ProductService>();
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.
