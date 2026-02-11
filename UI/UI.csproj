@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <StartupObject></StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\login.html" />
+    <None Include="wwwroot\Products\products.html" />
+    <None Include="wwwroot\register.html" />
+  </ItemGroup>
+
+</Project>
