@@ -16,7 +16,10 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get() => Ok(_productService.GetProductsForDisplay());
+        public IActionResult Get()
+        {
+            return Ok(_productService.GetProductsForDisplay());
+        }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
