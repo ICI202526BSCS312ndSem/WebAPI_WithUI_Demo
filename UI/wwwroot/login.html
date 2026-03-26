@@ -67,7 +67,7 @@
                     success: function (res) {
                         // Store the JWT token sent from the C# API
                         localStorage.setItem('token', res.token);
-                        window.location.href = 'home.html';
+                        window.location.href = 'products/products.html';
                     },
                     error: function () {
                         alert('Invalid email or password. Please try again.');

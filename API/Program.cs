@@ -1,6 +1,9 @@
 
 using API.DAL;
 using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json;
 
 namespace API
@@ -10,6 +13,26 @@ namespace API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            var key = Encoding.ASCII.GetBytes("THIS_IS_A_SAMPLE_KEY_THIS_IS_A_SAMPLE_KEY");
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
             // Add services to the container.
 
@@ -27,8 +50,7 @@ namespace API
             {
                 options.AddPolicy("AllowFrontend", policy =>
                 {
-                    // Replace with the actual URL/Port your UI project is running on
-                    policy.WithOrigins("http://localhost:5043", "https://localhost:5043")
+                    policy.WithOrigins("http://localhost:7057", "https://localhost:7056")
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
@@ -36,6 +58,8 @@ namespace API
 
             builder.Services.AddSingleton<ProductRepository>();
             builder.Services.AddScoped<ProductService>();
+
+            builder.WebHost.UseUrls("https://localhost:7062");
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.
