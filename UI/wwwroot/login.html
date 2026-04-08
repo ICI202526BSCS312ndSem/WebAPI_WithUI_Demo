@@ -65,9 +65,11 @@
                     contentType: 'application/json',
                     data: JSON.stringify(loginDto),
                     success: function (res) {
-                        // Store the JWT token sent from the C# API
+                        // Store the JWT token
                         localStorage.setItem('token', res.token);
-                        window.location.href = 'products/products.html';
+                        localStorage.setItem('permissions', JSON.stringify(res.permissions));
+
+                        window.location.href = 'Products/products.html';
                     },
                     error: function () {
                         alert('Invalid email or password. Please try again.');

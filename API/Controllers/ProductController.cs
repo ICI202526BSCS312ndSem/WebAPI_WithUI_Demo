@@ -3,11 +3,11 @@ using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers
+namespace YourProject.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Route("api/[controller]")]
+    [Authorize] // Ensure the user is logged in for any action in this controller
     public class ProductsController : ControllerBase
     {
         private readonly ProductService _productService;
@@ -17,39 +17,49 @@ namespace API.Controllers
             _productService = productService;
         }
 
+        // GET: api/products
         [HttpGet]
-        public IActionResult Get()
+        [Authorize(Policy = "CanView")]
+        public IActionResult GetAll()
         {
             return Ok(_productService.GetProductsForDisplay());
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "CanView")]
         public IActionResult Get(int id)
         {
             var product = _productService.GetSingleProduct(id);
             return product == null ? NotFound() : Ok(product);
         }
 
+        // POST: api/products
         [HttpPost]
-        public IActionResult Post([FromBody] Product product)
+        [Authorize(Policy = "CanAdd")] 
+        public IActionResult Create([FromBody] Product product)
         {
             _productService.CreateProduct(product);
-            return Ok();
+            return CreatedAtAction(nameof(GetAll), new { id = product.Id }, product);
         }
 
+        // PUT: api/products/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Product product)
+        [Authorize(Policy = "CanEdit")] 
+        public IActionResult Update(int id, [FromBody] Product product)
         {
-            product.Id = id;
+            if (id == 0) return BadRequest("ID mismatch");
+
             _productService.UpdateProduct(product);
-            return Ok();
+            return NoContent();
         }
 
+        // DELETE: api/products/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = "CanDelete")] 
         public IActionResult Delete(int id)
         {
             _productService.RemoveProduct(id);
-            return Ok();
+            return Ok(new { message = "Product deleted" });
         }
     }
 }
